@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import healthRouter from './routes/health.route.js';
+import authRoutes from "./routes/auth.routes.js";
+
 
 const app = express();
 
@@ -12,5 +14,6 @@ app.use(morgan('dev'));
 
 // Routes
 app.use('/', healthRouter);
+app.use("/auth", authRoutes);
 
 export default app;

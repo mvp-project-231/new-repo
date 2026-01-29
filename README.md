@@ -1,93 +1,37 @@
-# Ender Backend – Simple Guide
+# Ender Backend – Quick Start (Non‑Technical)
 
-This is a small Node.js + Express backend that powers the app’s server side. It connects to a PostgreSQL database (hosted on Supabase), and exposes a simple health check so you can confirm it’s running.
+This folder contains the server for the app. Think of it as the “helper” that talks to the database and answers simple requests.
 
-## What this backend does
+What it can do:
+- Start a small web server
+- Connect to a PostgreSQL database (on Supabase)
+- Provide a simple health check so you know it’s running
 
-- Runs a web server using Express
-- Connects to a PostgreSQL database (Supabase)
-- Uses Drizzle ORM for database access (structure and queries)
-- Can optionally use the Supabase client for authentication-related tasks
-- Provides a basic health endpoint to verify the service is up
+Requirements:
+- Node.js 18+ (includes npm)
 
-## Requirements
+1) Install
+- Open a terminal
+- Go to the backend folder: cd backend
+- Install packages: npm install
 
-- Node.js 18 or newer
-- npm (comes with Node.js)
+2) Add settings (only once)
+- Create a file named .env inside the backend folder.
+- Ask your admin/teammate for the real values. Do not share them publicly.
+- Example placeholders:
+  PORT=5000
+  DATABASE_URL=postgres://user:password@host:5432/dbname
+  SUPABASE_URL=https://your-project.supabase.co
+  SUPABASE_ANON_KEY=your-anon-key
 
-## Project layout
+3) Run the server
+- Development (auto‑restart): npm run dev
+- Production start: npm start
 
-- Backend code lives in `backend/`
-- Main entry file: `backend/src/server.js`
-- ES Modules are enabled (`type: module`)
-- Environment variables are read from a `.env` file in `backend/`
+4) Check that it works
+- Open your browser and go to: http://localhost:5000/ping (replace 5000 with your PORT if different)
+- You should see: { "status": "ok" }
 
-## Setup (first time)
-
-1) Open a terminal and go to the backend folder:
-
-```
-cd backend
-```
-
-2) Install dependencies:
-
-```
-npm install
-```
-
-3) Create the `.env` file in `backend/` (see “Environment variables” below).
-
-## Environment variables (in backend/.env)
-
-Do not share these publicly. Ask your admin for real values.
-
-- `PORT` – The port for the server (e.g., `5000`).
-- `DATABASE_URL` – The Supabase Postgres connection URL. Drizzle/pg will use this to connect to the database.
-- `SUPABASE_URL` – (Optional) Your Supabase project URL, only needed if using the Supabase client.
-- `SUPABASE_ANON_KEY` – (Optional) Anonymous key for the Supabase client.
-
-Example (placeholder values):
-
-```
-PORT=5000
-DATABASE_URL=postgres://user:password@host:5432/dbname
-SUPABASE_URL=https://your-supabase-project.supabase.co
-SUPABASE_ANON_KEY=your-anon-key
-```
-
-## Start the server
-
-From the `backend/` folder:
-
-- Development (auto-restart on changes):
-
-```
-npm run dev
-```
-
-- Production (regular start):
-
-```
-npm start
-```
-
-The server will print the port it’s using. If the database URL is valid, it will also confirm the database connection.
-
-## Available API endpoints
-
-- `GET /ping`
-  - Purpose: quick health check
-  - Response: `{ "status": "ok" }`
-
-## How to verify it’s working
-
-1) Start the server (see above).
-2) In your browser (or Postman), open: `http://localhost:5000/ping` (replace 5000 with your `PORT` if different).
-3) You should see a small JSON response: `{ "status": "ok" }`.
-
-## Notes for future development
-
-- Add more endpoints following the existing route/controller pattern.
-- Keep secrets out of the codebase; use environment variables.
-- For deployments, set the same environment variables on the hosting platform.
+Notes
+- Backend code lives in backend/, main file is backend/src/server.js
+- Keep the .env file private. Never commit real secrets.
