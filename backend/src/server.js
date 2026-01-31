@@ -4,7 +4,7 @@ import { db } from "./config/db.js";
 import { sql } from "drizzle-orm";
 import supabase from "./config/supabaseClient.js";
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8000;
 
 (async () => {
     try {

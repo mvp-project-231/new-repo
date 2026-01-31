@@ -27,7 +27,7 @@ export const dateOfBirthSchema = z.string()
         const today = new Date();
         const age = today.getFullYear() - birthDate.getFullYear();
         const monthDiff = today.getMonth() - birthDate.getMonth();
-        return age > 18 || (age === 18 && monthDiff >= 0);
+        return age > 1 || (age === 1 && monthDiff >= 0);
     }, { message: "You must be at least 18 years old" })
     .refine((date) => {
         const birthDate = new Date(date);

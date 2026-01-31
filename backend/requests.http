@@ -1,0 +1,36 @@
+### Base URL (modify if needed)
+@baseUrl = http://localhost:5000
+@json = application/json
+
+### Health
+GET {{baseUrl}}/
+
+### Health (ping)
+GET {{baseUrl}}/ping
+
+### Register (change email/username before sending)
+POST {{baseUrl}}/auth/register
+Content-Type: {{json}}
+
+{
+  "email": "test.user+{{timestamp}}@example.com",
+  "username": "testuser{{timestamp}}",
+  "password": "password123",
+  "date_of_birth": "1990-01-01"
+}
+
+### Login
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: {{json}}
+
+{
+  "email": "test.user+{{timestamp}}@example.com",
+  "password": "password123"
+}
+
+### Get Profile (requires Bearer token)
+# Set the token manually using the value from the Login response
+@accessToken = REPLACE_WITH_ACCESS_TOKEN
+GET {{baseUrl}}/auth/profile
+Authorization: Bearer {{accessToken}}

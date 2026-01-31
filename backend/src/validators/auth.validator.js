@@ -32,8 +32,11 @@ export const validate = (schema) => (req, res, next) => {
         const result = schema.safeParse(req.body);
 
         if (!result.success) {
-            const errors = result.error.errors.map(err => ({
-                field: err.path.join('.'),
+            // Zod v3 exposes validation problems on `issues` (older examples used `errors`).
+            // Guard defensively to avoid runtime TypeError when the property name differs.
+            const rawIssues = (result.error && (result.error.issues || result.error.errors)) || [];
+            const errors = rawIssues.map(err => ({
+                field: Array.isArray(err.path) ? err.path.join('.') : String(err.path || ''),
                 message: err.message
             }));
 

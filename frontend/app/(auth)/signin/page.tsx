@@ -23,6 +23,8 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import Link from "next/link";
+import { apiFetch, setTokens } from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
     email:
@@ -34,6 +36,7 @@ const formSchema = z.object({
 })
 
 const SignIn = () =>  {
+    const router = useRouter();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -42,8 +45,43 @@ const SignIn = () =>  {
         },
     })
 
-    function onSubmit(data: z.infer<typeof formSchema>) {
-        toast("You have successfully signed In!")
+    const [submitting, setSubmitting] = React.useState(false);
+
+    async function onSubmit(data: z.infer<typeof formSchema>) {
+        try {
+            setSubmitting(true);
+            const res = await apiFetch<{
+                success: boolean;
+                data?: { accessToken: string; refreshToken?: string; user?: any };
+            }>(
+                "/auth/login",
+                {
+                    method: "POST",
+                    body: JSON.stringify({
+                        email: data.email,
+                        password: data.password,
+                    }),
+                }
+            );
+
+            if (res?.success && res.data?.accessToken) {
+                setTokens(res.data.accessToken, res.data.refreshToken);
+                toast.success("Signed in successfully");
+                router.push("/profile");
+            }
+        } catch (err: any) {
+            const payload = err?.payload;
+            if (payload?.error?.toLowerCase().includes("email")) {
+                // @ts-ignore
+                form.setError("email", { message: payload.error });
+            } else if (payload?.error?.toLowerCase().includes("password")) {
+                // @ts-ignore
+                form.setError("password", { message: payload.error });
+            }
+            toast.error(payload?.error || err.message || "Sign in failed");
+        } finally {
+            setSubmitting(false);
+        }
     }
 
     return (
@@ -107,7 +145,7 @@ const SignIn = () =>  {
             </CardContent>
             <CardFooter className="flex flex-col items-center gap-2">
                 <Field orientation="horizontal">
-                    <Button type="submit" form="login">
+                    <Button type="submit" form="login" disabled={submitting}>
                         Sign In
                     </Button>
                 </Field>
